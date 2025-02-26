@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/var/www
+      - backend_logs:/var/www/var/log
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/usr/src/app
+    networks:
+      - app-network
+
+  database:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: symfony
+      MYSQL_USER: symfony
+      MYSQL_PASSWORD: symfony
+    networks:
+      - app-network
+
+volumes:
+  db_data:
+  backend_logs:
+
+networks:
+  app-network:
+    driver: bridge
